@@ -87,8 +87,9 @@ model Course {
   updatedAt DateTime @updatedAt
 
   lessons     Lesson[]
-  roadmaps    Roadmap[]
   evaluations Evaluation[]
+
+  RoadmapCourse RoadmapCourse[]
 
   @@map("courses")
 }
@@ -138,15 +139,27 @@ model Roadmap {
   title       String
   description String
 
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId Int
-
   deleted Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  courses RoadmapCourse[]
+
   @@map("roadmaps")
+}
+
+model RoadmapCourse {
+  roadmap   Roadmap @relation(fields: [roadmapId], references: [id])
+  roadmapId Int     @unique @map("roadmap_id")
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId Int    @unique @map("course_id")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("roadmap_courses")
 }
 
 model Evaluation {
