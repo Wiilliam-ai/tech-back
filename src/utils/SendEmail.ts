@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import { UserEntity } from '../app/user/user.entity'
 import { CustomError } from '../helpers/errors/custom-error'
+import { EMAIL_PASSWORD, EMAIL_USER } from '../config/envs.config'
 
 export class SendEmail {
   private transporter = nodemailer.createTransport({
@@ -9,8 +10,8 @@ export class SendEmail {
     secure: false,
     service: 'Gmail',
     auth: {
-      user: 'wcastroh07@gmail.com',
-      pass: 'qdzu wbla udzp pypd',
+      user: EMAIL_USER,
+      pass: EMAIL_PASSWORD,
     },
   })
 
