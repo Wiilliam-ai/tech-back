@@ -11,15 +11,22 @@ export class LessonService implements LessonDataSource {
     this.prisma = prisma
   }
 
+  async getLessonById(id: number): Promise<LessonEntity> {
+    throw new Error('Method not implemented.')
+  }
+
   async registerLesson(
     registerLessonDto: RegisterLessonDto,
   ): Promise<LessonEntity> {
     const { title, description, content, courseId, videoUrl } =
       registerLessonDto
 
+    // videoUrl = 1234.mp4
+    const videoUrlFile = videoUrl.split('.')
+
     const newResource = await this.prisma.resource.create({
       data: {
-        url: videoUrl,
+        url: videoUrlFile[0],
       },
     })
 

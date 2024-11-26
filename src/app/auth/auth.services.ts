@@ -65,7 +65,7 @@ export class AuthServices implements AuthDataSource {
     return {
       id: userUpdated.id,
       email: userUpdated.email,
-      firsName: userUpdated.firstName,
+      firstName: userUpdated.firstName,
       isVerified: userUpdated.isVerified,
       lastName: userUpdated.lastName,
       password: userUpdated.password,

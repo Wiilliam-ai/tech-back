@@ -7,6 +7,7 @@ import { RegisterLessonDto } from '../dtos/register-lesson.dto'
 import { LessonService } from '../lesson.service'
 import database from '../../../config/database'
 import { UploadFile } from '../../../utils/uploadFile'
+import { PathGlobal } from '../../../helpers/global/path-global'
 
 export const registerLesson = async (req: Request, res: Response) => {
   try {
@@ -28,8 +29,11 @@ export const registerLesson = async (req: Request, res: Response) => {
 
     const lesson = await lessonService.registerLesson(registerLessonDto!)
     const isSaved = lesson.title === registerLessonDto!.title
-    if (isSaved)
+    if (isSaved) {
       UploadFile.saveVideo(lesson.videoUrl, 'lessons', dataFiles.buffer)
+      const pathFileConvert = `${PathGlobal.ASSETS_PATH}/lessons/${lesson.videoUrl}`
+      await UploadFile.convertToHLS(pathFileConvert)
+    }
 
     CustomResponse.execute({
       res,

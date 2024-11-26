@@ -5,4 +5,5 @@ export abstract class LessonDataSource {
   abstract registerLesson(
     registerLessonDto: RegisterLessonDto,
   ): Promise<LessonEntity>
+  abstract getLessonById(id: number): Promise<LessonEntity>
 }

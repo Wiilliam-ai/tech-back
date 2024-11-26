@@ -1,18 +1,102 @@
 import { PrismaClient } from '@prisma/client'
 import { RegisterUserDto } from './dtos/register-user.dto'
 import { UserDatasource } from './user.datasource'
-import { UserEntity } from './user.entity'
+import { UserEntity, UserEntityWeb } from './user.entity'
 import { URL_IMAGE_DEFAULT } from '../../helpers/global/url-global'
 import { Generator } from '../../utils/generator'
 import { CompleteUserDto } from './dtos/complete-user.dto'
 import { CustomError } from '../../helpers/errors/custom-error'
 import { Bcrypt } from '../../config/bcrypt'
+import { ForwardEmailDto } from './dtos/forward-email.dto'
 
 export class UserService implements UserDatasource {
   private pristma: PrismaClient
 
   constructor(pristma: PrismaClient) {
     this.pristma = pristma
+  }
+
+  async forwardEmail(ForwardEmailDto: ForwardEmailDto): Promise<UserEntity> {
+    const { email } = ForwardEmailDto
+    const user = await this.pristma.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        avatar: true,
+        role: true,
+      },
+    })
+
+    if (!user) throw CustomError.badRequest('User not found')
+    if (user.isVerified) throw CustomError.badRequest('User already verified')
+
+    const tokenVerif = Generator.randomText()
+
+    const userUpdated = await this.pristma.user.update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        tokenVerif: tokenVerif,
+      },
+    })
+
+    if (!userUpdated) throw CustomError.badRequest('Error updating user')
+
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      password: user.password,
+      email: user.email,
+      isVerified: userUpdated.isVerified,
+      tokenVerif: userUpdated.tokenVerif || '',
+      avatar: {
+        id: user.avatar.id,
+        url: user.avatar.url,
+      },
+      role: {
+        doAdmin: user.role.doAdmin,
+        doInst: user.role.doInst,
+        doProf: user.role.doProf,
+        id: user.role.id,
+      },
+    }
+  }
+
+  async listUsers(): Promise<UserEntityWeb[]> {
+    const users = await this.pristma.user.findMany({
+      where: {
+        deleted: false,
+      },
+      include: {
+        avatar: true,
+        role: true,
+      },
+    })
+
+    const result = users.map((user) => {
+      return {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isVerified: user.isVerified,
+        avatar: {
+          id: user.avatar.id,
+          url: user.avatar.url,
+        },
+        role: {
+          doAdmin: user.role.doAdmin,
+          doInst: user.role.doInst,
+          doProf: user.role.doProf,
+          id: user.role.id,
+        },
+      }
+    })
+
+    return result
   }
   async completRegisterUser(completeUserDto: CompleteUserDto): Promise<void> {
     const { firstName, lastName, password, tokenVerif } = completeUserDto
@@ -97,7 +181,7 @@ export class UserService implements UserDatasource {
 
     return {
       id: newUser.id,
-      firsName: newUser.firstName,
+      firstName: newUser.firstName,
       lastName: newUser.lastName,
       password: newUser.password,
       email: newUser.email,

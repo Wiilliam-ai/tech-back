@@ -7,6 +7,7 @@ export class LessonRoutes {
     const router = Router()
     const upload = FilesMiddleware.upload
     router.post('/', upload.single('video'), registerLesson)
+    router.get('/:id')
     return router
   }
 }

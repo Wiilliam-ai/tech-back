@@ -51,6 +51,8 @@ model User {
   isVerified Boolean @default(false) @map("is_verified")
   tokenVerif String? @map("token_verif") @db.Text
 
+  deleted Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

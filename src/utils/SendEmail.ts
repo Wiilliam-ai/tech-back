@@ -1,7 +1,12 @@
 import nodemailer from 'nodemailer'
 import { UserEntity } from '../app/user/user.entity'
 import { CustomError } from '../helpers/errors/custom-error'
-import { EMAIL_PASSWORD, EMAIL_USER } from '../config/envs.config'
+import {
+  EMAIL_PASSWORD,
+  EMAIL_USER,
+  VIEW_VERIFY,
+  VIEW_RECOVER,
+} from '../config/envs.config'
 
 export class SendEmail {
   private transporter = nodemailer.createTransport({
@@ -26,7 +31,7 @@ export class SendEmail {
           <h1>Bienvenido a la plataforma</h1>
           <p>Gracias por registrarte en nuestra plataforma</p>
           <p>Por favor completa los datos de tu cuenta haciendo click en el siguiente enlace</p>
-          <a href="http://localhost:3000/verify/${registerUserDto.tokenVerif}">Verificar cuenta</a>
+          <a href="${VIEW_VERIFY}/${registerUserDto.tokenVerif}">Verificar cuenta</a>
           `,
       })
     } catch (error) {
@@ -44,7 +49,7 @@ export class SendEmail {
         html: `
           <h1>Recuperar cuenta</h1>
           <p>Por favor restablece tu clave haciendo click en el siguiente enlace</p>
-          <a href="http://localhost:3000/recover/${tokenVerif}">Restablece la clave</a>
+          <a href="${VIEW_RECOVER}/${tokenVerif}">Restablece la clave</a>
           `,
       })
     } catch (error) {

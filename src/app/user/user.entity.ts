@@ -13,7 +13,7 @@ export type RoleEntity = {
 export type UserEntity = {
   id: string
   email: string
-  firsName: string
+  firstName: string
   lastName: string
   password: string
   isVerified: boolean
@@ -21,3 +21,5 @@ export type UserEntity = {
   avatar: AvatarEntity
   role: RoleEntity
 }
+
+export type UserEntityWeb = Omit<UserEntity, 'password' | 'tokenVerif'>
