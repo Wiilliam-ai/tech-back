@@ -31,8 +31,8 @@ export const registerLesson = async (req: Request, res: Response) => {
     const isSaved = lesson.title === registerLessonDto!.title
     if (isSaved) {
       UploadFile.saveVideo(lesson.videoUrl, 'lessons', dataFiles.buffer)
-      const pathFileConvert = `${PathGlobal.ASSETS_PATH}/lessons/${lesson.videoUrl}`
-      await UploadFile.convertToHLS(pathFileConvert)
+      // const pathFileConvert = `${PathGlobal.ASSETS_PATH}/lessons/${lesson.videoUrl}`
+      // await UploadFile.convertToHLS(pathFileConvert)
     }
 
     CustomResponse.execute({

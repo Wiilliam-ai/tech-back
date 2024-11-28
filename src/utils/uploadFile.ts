@@ -65,7 +65,7 @@ export class UploadFile {
         .on('end', () => {
           console.log(`Conversión a HLS completada: ${hlsDir}`)
           resolve(hlsDir)
-          this.deleteFile(videoPath)
+          // this.deleteFile(videoPath)
         })
         .on('error', (err) => {
           console.error('Error durante la conversión a HLS:', err)
