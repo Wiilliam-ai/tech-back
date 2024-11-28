@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { RegisterLessonDto } from './dtos/register-lesson.dto'
 import { LessonDataSource } from './lesson.datasource'
-import { LessonEntity } from './lesson.entity'
+import { LessonEntity, LessonsData } from './lesson.entity'
 import { CustomError } from '../../helpers/errors/custom-error'
 
 export class LessonService implements LessonDataSource {
@@ -9,6 +9,21 @@ export class LessonService implements LessonDataSource {
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma
+  }
+
+  async getLessonsByCourseId(courseId: number): Promise<LessonsData[]> {
+    const lessons = await this.prisma.lesson.findMany({
+      where: {
+        courseId,
+      },
+      include: {
+        docs: true,
+      },
+    })
+
+    console.log(lessons)
+
+    return []
   }
 
   async getLessonById(id: number): Promise<LessonEntity> {

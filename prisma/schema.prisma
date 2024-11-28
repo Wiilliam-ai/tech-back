@@ -122,6 +122,8 @@ model Docs {
   id    Int    @id @default(autoincrement())
   title String
 
+  typeDoc String @map("type_doc")
+
   resources Resource @relation(fields: [document], references: [id])
   document  String   @unique
 
