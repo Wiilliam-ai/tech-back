@@ -15,15 +15,28 @@ export class LessonService implements LessonDataSource {
     const lessons = await this.prisma.lesson.findMany({
       where: {
         courseId,
+        deleted: false,
       },
       include: {
+        resources: true,
         docs: true,
       },
     })
 
-    console.log(lessons)
+    const mappLessons: LessonsData[] = lessons.map((lesson) => {
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        content: lesson.content,
+        description: lesson.description,
+        resources: {
+          id: lesson.resources.id,
+          url: lesson.resources.url,
+        },
+      }
+    })
 
-    return []
+    return mappLessons
   }
 
   async getLessonById(id: number): Promise<LessonEntity> {

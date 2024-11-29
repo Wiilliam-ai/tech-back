@@ -7,10 +7,13 @@ export interface LessonEntity {
   videoUrl: string
 }
 
-export interface LessonsData extends LessonEntity {
-  docs: {
-    id: number
-    title: string
-    fileUrl: string
+export interface LessonsData {
+  id: number
+  title: string
+  description: string
+  content: string
+  resources: {
+    id: string
+    url: string
   }
 }
