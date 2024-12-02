@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { RegisterLessonDto } from './dtos/register-lesson.dto'
 import { LessonDataSource } from './lesson.datasource'
-import { LessonEntity, LessonsData } from './lesson.entity'
+import { IDocs, LessonEntity, LessonsData } from './lesson.entity'
 import { CustomError } from '../../helpers/errors/custom-error'
 
 export class LessonService implements LessonDataSource {
@@ -17,25 +17,53 @@ export class LessonService implements LessonDataSource {
         courseId,
         deleted: false,
       },
-      include: {
-        resources: true,
-        docs: true,
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        description: true,
+        resources: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        docs: {
+          select: {
+            id: true,
+            title: true,
+            document: true,
+            typeDoc: true,
+            resources: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
       },
     })
 
     const mappLessons: LessonsData[] = lessons.map((lesson) => {
+      const docs: IDocs[] = lesson.docs.map((doc) => {
+        return {
+          id: doc.id,
+          title: doc.title,
+          document: doc.resources.url,
+          typeDoc: doc.typeDoc,
+        }
+      })
+
       return {
         id: lesson.id,
         title: lesson.title,
-        content: lesson.content,
         description: lesson.description,
-        resources: {
-          id: lesson.resources.id,
-          url: lesson.resources.url,
-        },
+        content: lesson.content,
+        resources: lesson.resources,
+        docs,
       }
     })
-
     return mappLessons
   }
 

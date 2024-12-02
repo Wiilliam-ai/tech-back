@@ -4,7 +4,6 @@ import { CustomResponse } from '../custom/custom-response'
 
 export class HandleError {
   static execute = (error: unknown, logMsg: string, res: Response) => {
-    console.log({ error })
     if (error instanceof CustomError) {
       CustomResponse.execute({
         message: error.message,

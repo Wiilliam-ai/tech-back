@@ -7,6 +7,13 @@ export interface LessonEntity {
   videoUrl: string
 }
 
+export interface IDocs {
+  id: number
+  title: string
+  typeDoc: string
+  document: string
+}
+
 export interface LessonsData {
   id: number
   title: string
@@ -16,4 +23,5 @@ export interface LessonsData {
     id: string
     url: string
   }
+  docs: IDocs[]
 }
