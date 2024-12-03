@@ -13,6 +13,10 @@ export class PathGlobal {
     return join(PathGlobal.ASSETS_PATH, 'docs')
   }
 
+  static get AVATARS_PATH(): string {
+    return join(PathGlobal.ASSETS_PATH, 'avatars')
+  }
+
   static get ASSETS_HLS_PATH(): string {
     return join(PathGlobal.ASSETS_PATH, 'hls')
   }

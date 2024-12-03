@@ -8,12 +8,44 @@ import { CompleteUserDto } from './dtos/complete-user.dto'
 import { CustomError } from '../../helpers/errors/custom-error'
 import { Bcrypt } from '../../config/bcrypt'
 import { ForwardEmailDto } from './dtos/forward-email.dto'
+import { VerifyUserDto } from '../auth/dtos/verifyUser.dto'
+import { UploadFile } from '../../utils/uploadFile'
+import { PathGlobal } from '../../helpers/global/path-global'
 
 export class UserService implements UserDatasource {
   private pristma: PrismaClient
 
   constructor(pristma: PrismaClient) {
     this.pristma = pristma
+  }
+  async uploadAvatar(
+    avatar: string,
+    verifyUserDto: VerifyUserDto,
+  ): Promise<void> {
+    const user = await this.pristma.user.findUnique({
+      where: {
+        id: verifyUserDto.id,
+      },
+      include: {
+        avatar: true,
+      },
+    })
+
+    if (!user) throw CustomError.badRequest('User not found')
+
+    const updateAvatarDefault = await this.pristma.avatar.update({
+      where: {
+        id: user.avatarId,
+      },
+      data: {
+        url: avatar,
+      },
+    })
+
+    if (!updateAvatarDefault)
+      throw CustomError.badRequest('Error updating avatar')
+
+    UploadFile.deleteFile(PathGlobal.AVATARS_PATH + user.avatar.url)
   }
 
   async forwardEmail(ForwardEmailDto: ForwardEmailDto): Promise<UserEntity> {

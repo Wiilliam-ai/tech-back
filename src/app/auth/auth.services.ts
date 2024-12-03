@@ -103,7 +103,7 @@ export class AuthServices implements AuthDataSource {
       lastName: user.lastName,
       avatar: {
         id: user.avatar.id,
-        url: `/uploads/${user.avatar.url}`,
+        url: `${user.avatar.url}`,
       },
       role: user.role,
     }
